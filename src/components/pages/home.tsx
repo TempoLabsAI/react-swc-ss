@@ -32,8 +32,8 @@ import { supabase } from "../../../supabase/supabase";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
-import { useToast } from "@/components/ui/use-toast";
-import { Toaster } from "@/components/ui/toaster";
+import { toast } from "sonner";
+import { Toaster } from "@/components/ui/sonner";
 
 // Define the Plan type
 interface Plan {
@@ -69,7 +69,6 @@ interface Feature {
 
 export default function LandingPage() {
   const { user, signOut } = useAuth();
-  const { toast } = useToast();
 
   const [plans, setPlans] = useState<Plan[]>([]);
   const [error, setError] = useState("");
@@ -101,10 +100,8 @@ export default function LandingPage() {
   const handleCheckout = async (priceId: string) => {
     if (!user) {
       // Redirect to login if user is not authenticated
-      toast({
-        title: "Authentication required",
+      toast("Authentication required", {
         description: "Please sign in to subscribe to a plan.",
-        variant: "default",
       });
       window.location.href = "/login?redirect=pricing";
       return;
@@ -132,10 +129,8 @@ export default function LandingPage() {
 
       // Redirect to Stripe checkout
       if (data?.url) {
-        toast({
-          title: "Redirecting to checkout",
+        toast("Redirecting to checkout", {
           description: "You'll be redirected to Stripe to complete your purchase.",
-          variant: "default",
         });
         window.location.href = data.url;
       } else {
@@ -144,10 +139,8 @@ export default function LandingPage() {
     } catch (error) {
       console.error('Error creating checkout session:', error);
       setError('Failed to create checkout session. Please try again.');
-      toast({
-        title: "Checkout failed",
+      toast.error("Checkout failed", {
         description: "There was an error creating your checkout session. Please try again.",
-        variant: "destructive",
       });
     } finally {
       setIsLoading(false);
